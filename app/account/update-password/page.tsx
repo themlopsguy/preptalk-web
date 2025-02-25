@@ -89,15 +89,6 @@ export default function UpdatePassword() {
   return (
     <div className="max-w-md mx-auto p-6 md:p-10">
       <div className="text-center mb-8">
-        <div className="flex justify-center mb-4">
-          <Image 
-            src="/logo.png" 
-            alt="PrepTalk Logo" 
-            width={120} 
-            height={40}
-            className="h-12 w-auto"
-          />
-        </div>
         <h1 className="text-2xl font-bold mb-2">Reset Your Password</h1>
         <p className="text-gray-600">
           Enter your new password below

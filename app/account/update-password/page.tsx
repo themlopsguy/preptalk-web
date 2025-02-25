@@ -27,43 +27,43 @@ const logDebug = (label: string, value: string | number | boolean) => {
 
   // Handle recovery when component mounts
   useEffect(() => {
-    const processAuthCode = async () => {
+    const handlePasswordReset = async () => {
       try {
-        // Get URL parameters
-        const queryParams = new URLSearchParams(window.location.search);
-        const code = queryParams.get('code');
+        // 1. First check if the user is already authenticated
+        // This should happen automatically if they clicked a valid reset link
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
-        logDebug('Auth code present', code ? 'Yes' : 'No');
+        logDebug('Session check performed', 'Yes');
         
-        if (!code) {
-          // If no code is present, check if we already have a session
-          const { data: sessionData } = await supabase.auth.getSession();
+        if (sessionError) {
+          logDebug('Session error', sessionError.message);
+          setError(`Authentication error: ${sessionError.message}`);
+          setSessionStatus('not-authenticated');
+          return;
+        }
+        
+        if (session) {
+          // The user is already authenticated from clicking the reset link
+          logDebug('User authenticated', 'Yes');
+          logDebug('User ID', session.user.id);
+          setSessionStatus('authenticated');
+        } else {
+          // No session found - either the link was invalid or expired
+          logDebug('No session found', 'Yes');
           
-          if (sessionData?.session) {
-            logDebug('Existing session found', 'Yes');
-            setSessionStatus('authenticated');
-            return;
+          // Check if we have an auth code in URL, indicating a failed authentication attempt
+          const queryParams = new URLSearchParams(window.location.search);
+          const code = queryParams.get('code');
+          
+          if (code) {
+            logDebug('Auth code found but no session', code);
+            setError('The password reset link is invalid or has expired. Please request a new one.');
+          } else {
+            setError('No valid authentication found. Please request a password reset link from the app.');
           }
           
-          setError('No authentication code found in URL. Please request a new password reset link.');
           setSessionStatus('not-authenticated');
-          return;
         }
-        
-        // Exchange the code for a session
-        const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
-        
-        if (exchangeError) {
-          logDebug('Code verification error', exchangeError.message);
-          setError(`Authentication error: ${exchangeError.message}`);
-          setSessionStatus('not-authenticated');
-          return;
-        }
-        
-        logDebug('Session established', 'Yes');
-        logDebug('User ID', data?.user?.id || 'None');
-        setSessionStatus('authenticated');
-        
       } catch (err) {
         if (err instanceof Error) {
           logDebug('Unexpected error', err.message);
@@ -76,7 +76,7 @@ const logDebug = (label: string, value: string | number | boolean) => {
       }
     };
     
-    processAuthCode();
+    handlePasswordReset();
   }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {

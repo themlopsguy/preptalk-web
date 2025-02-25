@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import Image from 'next/image';
+import { FormEvent } from 'react';
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
@@ -15,69 +16,96 @@ export default function UpdatePassword() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const [sessionStatus, setSessionStatus] = useState<'loading' | 'authenticated' | 'not-authenticated'>('loading');
+  const [sessionStatus, setSessionStatus] = useState('loading');
+  const [debugInfo, setDebugInfo] = useState({});
 
-  // Check for recovery session when component mounts
+  // Function for debug logging that shows up in the UI
+// Function for debug logging that shows up in the UI
+const logDebug = (label: string, value: string | number | boolean) => {
+    setDebugInfo(prev => ({ ...prev, [label]: value }));
+  };
+
+  // Handle recovery when component mounts
   useEffect(() => {
-    const checkSession = async () => {
-      // 1. Get the hash fragment from the URL
-      const hash = window.location.hash;
-      
-      // 2. Check if we have recovery tokens in the URL
-      if (hash && hash.includes('type=recovery')) {
-        // Parse the hash to get access_token and refresh_token
-        const params = new URLSearchParams(hash.substring(1));
-        const access_token = params.get('access_token');
-        const refresh_token = params.get('refresh_token');
+    const processRecoveryTokens = async () => {
+      try {
+        // 1. Get the URL hash (everything after #)
+        const hash = window.location.hash;
+        logDebug('Hash present', hash ? 'Yes' : 'No');
         
-        // Make sure both tokens exist before proceeding
-        if (access_token && refresh_token) {
-          try {
-            // 3. Set the session with the recovery tokens
-            const { data, error } = await supabase.auth.setSession({
-              access_token,
-              refresh_token
-            });
-            
-            if (error) throw error;
-            
-            console.log("Recovery session established:", data);
+        if (!hash) {
+          // If no hash is present, check if we already have a session
+          const { data: sessionData } = await supabase.auth.getSession();
+          
+          if (sessionData?.session) {
+            logDebug('Existing session found', 'Yes');
             setSessionStatus('authenticated');
             return;
-          } catch (error) {
-            console.error("Error setting recovery session:", error);
           }
-        } else {
-          console.error("Missing required tokens in recovery URL");
+          
+          setError('No recovery tokens found in URL. Please request a new password reset link.');
           setSessionStatus('not-authenticated');
-          setError("Invalid password reset link. Some required parameters are missing.");
-        }
-      } else {
-        // Fall back to checking for an existing session if no tokens in URL
-        const { data, error } = await supabase.auth.getSession();
-        
-        console.log("Session check:", data);
-        
-        if (error) {
-          console.error("Session error:", error);
-          setSessionStatus('not-authenticated');
-          setError("Authentication error. This reset link may have expired.");
           return;
         }
         
-        if (data?.session) {
+        // 2. Handle hash with recovery tokens
+        if (hash.includes('type=recovery')) {
+          logDebug('Recovery hash detected', 'Yes');
+          
+          // Parse the hash fragments
+          const hashParams = new URLSearchParams(hash.substring(1)); // Remove the # character
+          const accessToken = hashParams.get('access_token');
+          const refreshToken = hashParams.get('refresh_token');
+          
+          logDebug('Access token present', accessToken ? 'Yes' : 'No');
+          logDebug('Refresh token present', refreshToken ? 'Yes' : 'No');
+          
+          if (!accessToken || !refreshToken) {
+            setError('Invalid recovery link. Missing authentication tokens.');
+            setSessionStatus('not-authenticated');
+            return;
+          }
+          
+          // 3. Set the recovery session
+          const { data, error: sessionError } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken
+          });
+          
+          if (sessionError) {
+            logDebug('Session error', sessionError.message);
+            setError(`Authentication error: ${sessionError.message}`);
+            setSessionStatus('not-authenticated');
+            return;
+          }
+          
+          logDebug('Session established', 'Yes');
+          logDebug('User ID', data?.user?.id || 'None');
           setSessionStatus('authenticated');
-        } else {
-          setSessionStatus('not-authenticated');
-          setError("No active reset session. This reset link may have expired or already been used.");
+          return;
         }
+        
+        // If there's a hash but it's not a recovery link
+        setError('Invalid recovery link format.');
+        setSessionStatus('not-authenticated');
+      } catch (err: unknown) {
+        // Type guard to check if err is an Error object
+        if (err instanceof Error) {
+          logDebug('Unexpected error', err.message);
+          setError(`An unexpected error occurred: ${err.message}`);
+        } else {
+          // Handle case where err is not an Error object
+          logDebug('Unexpected error', 'Unknown error occurred');
+          setError('An unexpected error occurred');
+        }
+        setSessionStatus('not-authenticated');
       }
     };
     
-    checkSession();
+    processRecoveryTokens();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     if (sessionStatus !== 'authenticated') {
@@ -102,19 +130,29 @@ export default function UpdatePassword() {
     
     try {
       // Update password using the existing session
-      const { error } = await supabase.auth.updateUser({
+      const { error: updateError } = await supabase.auth.updateUser({
         password: password
       });
       
-      if (error) throw error;
+      if (updateError) throw updateError;
       
       setMessage('Password updated successfully! You can now return to the app and log in with your new password.');
-    } catch (error: any) {
-      console.error("Password update error:", error);
-      setError(error.message || 'Failed to update password. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+    } catch (error: unknown) {
+        console.error("Password update error:", error);
+        
+        // Safely access the error message with type checking
+        if (error instanceof Error) {
+          setError(error.message);
+        } else if (typeof error === 'object' && error !== null && 'message' in error) {
+          // Handle case where error is an object with a message property but not an Error instance
+          setError((error as { message: string }).message);
+        } else {
+          // Fallback for other error types
+          setError('Failed to update password. Please try again.');
+        }
+      } finally {
+        setLoading(false);
+      }
   };
 
   const openApp = () => {
@@ -128,6 +166,14 @@ export default function UpdatePassword() {
         <p className="text-gray-600">
           Enter your new password below
         </p>
+      </div>
+      
+      {/* Debug panel - can be removed in production */}
+      <div className="bg-gray-100 p-4 mb-6 text-xs rounded">
+        <h3 className="font-bold mb-2">Debug Info:</h3>
+        <pre className="whitespace-pre-wrap overflow-auto max-h-40">
+          {JSON.stringify(debugInfo, null, 2)}
+        </pre>
       </div>
       
       {sessionStatus === 'loading' && (

@@ -2,20 +2,19 @@
 
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import Image from 'next/image';
 import { FormEvent } from 'react';
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-    auth: {
-      storageKey: 'supabase.auth.token',
-      autoRefreshToken: true,
-      persistSession: true,
-      detectSessionInUrl: true // Enables detecting tokens in the URL
-    }
-  });
+  auth: {
+    storageKey: 'supabase.auth.token',
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true
+  }
+});
 
 export default function UpdatePassword() {
   const [password, setPassword] = useState('');
@@ -27,60 +26,22 @@ export default function UpdatePassword() {
   const [debugInfo, setDebugInfo] = useState({});
 
   // Function for debug logging that shows up in the UI
-// Function for debug logging that shows up in the UI
-const logDebug = (label: string, value: string | number | boolean) => {
+  const logDebug = (label: string, value: string) => {
     setDebugInfo(prev => ({ ...prev, [label]: value }));
   };
 
   // Handle recovery when component mounts
   useEffect(() => {
-    const handlePasswordReset = async () => {
-      try {
-        const queryParams = new URLSearchParams(window.location.search);
-        const code = queryParams.get('code');
-        
-        if (!code) {
-          setError('No valid authentication code found. Please request a password reset link from the app.');
-          setSessionStatus('not-authenticated');
-          return;
-        }
-        
-        logDebug('Auth code found', 'Yes');
-        
-        // Exchange the code for a session and wait for it to complete
-        const { data, error: codeError } = await supabase.auth.exchangeCodeForSession(code);
-        
-        if (codeError) {
-          logDebug('Code exchange error', codeError.message);
-          setError(`Authentication error: ${codeError.message}`);
-          setSessionStatus('not-authenticated');
-          return;
-        }
-        
-        if (data?.session) {
-          // Session successfully established
-          logDebug('Session established', 'Yes');
-          logDebug('User ID', data.session.user.id);
-          setSessionStatus('authenticated');
-        } else {
-          logDebug('No session after code exchange', 'true');
-          setError('Failed to establish a session. Please request a new password reset link.');
-          setSessionStatus('not-authenticated');
-        }
-      } catch (err) {
-        if (err instanceof Error) {
-          logDebug('Unexpected error', err.message);
-          setError(`An unexpected error occurred: ${err.message}`);
-        } else {
-          logDebug('Unexpected error', 'Unknown error occurred');
-          setError('An unexpected error occurred');
-        }
-        setSessionStatus('not-authenticated');
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event == "PASSWORD_RECOVERY") {
+        const newPassword = prompt("What would you like your new password to be?");
+        const { data, error } = await supabase.auth.updateUser({ password: newPassword ?? "" })
+ 
+        if (data) alert("Password updated successfully!")
+        if (error) alert("There was an error updating your password.")
       }
-    };
-    
-    handlePasswordReset();
-  }, []);
+    })
+  }, [])
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -106,29 +67,38 @@ const logDebug = (label: string, value: string | number | boolean) => {
     setMessage('');
     
     try {
-        // Verify we still have a valid session before updating
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (!session) {
-          setError("Your session has expired. Please request a new password reset link.");
-          setSessionStatus('not-authenticated');
-          return;
-        }
-        
-        // Update the password using the current session
-        const { error: updateError } = await supabase.auth.updateUser({
-          password: password
-        });
-        
-        if (updateError) throw updateError;
-        
-        setMessage('Password updated successfully! You can now return to the app and log in with your new password.');
-      } catch (error) {
-        // Your existing error handling
-      } finally {
-        setLoading(false);
+      // Verify we still have a valid session before updating
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        setError("Your session has expired. Please request a new password reset link.");
+        setSessionStatus('not-authenticated');
+        return;
       }
-    };
+      
+      // Update password using the existing session
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: password
+      });
+      
+      if (updateError) throw updateError;
+      
+      setMessage('Password updated successfully! You can now return to the app and log in with your new password.');
+    } catch (error) {
+      console.error("Password update error:", error);
+      
+      // Safely access the error message with type checking
+      if (error instanceof Error) {
+        setError(error.message);
+      } else if (typeof error === 'object' && error !== null && 'message' in error) {
+        setError((error as { message: string }).message);
+      } else {
+        setError('Failed to update password. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const openApp = () => {
     window.location.href = 'preptalk://reset-success';

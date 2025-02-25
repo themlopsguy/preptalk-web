@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import Image from 'next/image';
 
-// Initialize Supabase client (populated from environment variables)
+// Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -15,15 +15,40 @@ export default function UpdatePassword() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [sessionStatus, setSessionStatus] = useState<'loading' | 'authenticated' | 'not-authenticated'>('loading');
 
-  // Check for hash parameter when component mounts
+  // Check for recovery session when component mounts
   useEffect(() => {
-    // The URL will contain a hash fragment with the access token
-    // This is automatically handled by Supabase's auth client
+    const checkSession = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      
+      console.log("Session check:", data);
+      
+      if (error) {
+        console.error("Session error:", error);
+        setSessionStatus('not-authenticated');
+        setError("Authentication error. This reset link may have expired.");
+        return;
+      }
+      
+      if (data?.session) {
+        setSessionStatus('authenticated');
+      } else {
+        setSessionStatus('not-authenticated');
+        setError("No active reset session. This reset link may have expired or already been used.");
+      }
+    };
+    
+    checkSession();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (sessionStatus !== 'authenticated') {
+      setError("You're not authenticated. Please request a new password reset link.");
+      return;
+    }
     
     // Basic validation
     if (password !== confirmPassword) {
@@ -41,7 +66,7 @@ export default function UpdatePassword() {
     setMessage('');
     
     try {
-      // Update password using the hash from URL
+      // Update password using the existing session
       const { error } = await supabase.auth.updateUser({
         password: password
       });
@@ -50,6 +75,7 @@ export default function UpdatePassword() {
       
       setMessage('Password updated successfully! You can now return to the app and log in with your new password.');
     } catch (error: any) {
+      console.error("Password update error:", error);
       setError(error.message || 'Failed to update password. Please try again.');
     } finally {
       setLoading(false);
@@ -63,11 +89,40 @@ export default function UpdatePassword() {
   return (
     <div className="max-w-md mx-auto p-6 md:p-10">
       <div className="text-center mb-8">
+        <div className="flex justify-center mb-4">
+          <Image 
+            src="/logo.png" 
+            alt="PrepTalk Logo" 
+            width={120} 
+            height={40}
+            className="h-12 w-auto"
+          />
+        </div>
         <h1 className="text-2xl font-bold mb-2">Reset Your Password</h1>
         <p className="text-gray-600">
           Enter your new password below
         </p>
       </div>
+      
+      {sessionStatus === 'loading' && (
+        <div className="text-center py-8">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-300 border-t-blue-600"></div>
+          <p className="mt-4 text-gray-600">Verifying your reset link...</p>
+        </div>
+      )}
+      
+      {sessionStatus === 'not-authenticated' && (
+        <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">
+          <p>{error || "This password reset link is invalid or has expired."}</p>
+          <p className="mt-2">Please return to the app and request a new password reset link.</p>
+          <button 
+            onClick={openApp}
+            className="block w-full mt-4 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+          >
+            Return to App
+          </button>
+        </div>
+      )}
       
       {message && (
         <div className="bg-green-100 text-green-800 p-4 rounded-md mb-6">
@@ -81,57 +136,59 @@ export default function UpdatePassword() {
         </div>
       )}
       
-      {error && (
+      {error && sessionStatus === 'authenticated' && (
         <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">
           {error}
         </div>
       )}
       
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label 
-            htmlFor="password" 
-            className="block text-sm font-medium mb-2"
+      {sessionStatus === 'authenticated' && !message && (
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label 
+              htmlFor="password" 
+              className="block text-sm font-medium mb-2"
+            >
+              New Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          
+          <div>
+            <label 
+              htmlFor="confirmPassword" 
+              className="block text-sm font-medium mb-2"
+            >
+              Confirm Password
+            </label>
+            <input
+              id="confirmPassword"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full py-3 bg-blue-600 text-white rounded-md font-medium ${
+              loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-blue-700'
+            }`}
           >
-            New Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-        
-        <div>
-          <label 
-            htmlFor="confirmPassword" 
-            className="block text-sm font-medium mb-2"
-          >
-            Confirm Password
-          </label>
-          <input
-            id="confirmPassword"
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-        
-        <button
-          type="submit"
-          disabled={loading}
-          className={`w-full py-3 bg-blue-600 text-white rounded-md font-medium ${
-            loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-blue-700'
-          }`}
-        >
-          {loading ? 'Updating...' : 'Update Password'}
-        </button>
-      </form>
+            {loading ? 'Updating...' : 'Update Password'}
+          </button>
+        </form>
+      )}
       
       <p className="text-center text-sm text-gray-600 mt-8">
         Return to <a href="preptalk://" className="text-blue-600">PrepTalk App</a>

@@ -36,44 +36,35 @@ const logDebug = (label: string, value: string | number | boolean) => {
   useEffect(() => {
     const handlePasswordReset = async () => {
       try {
-        // First check if there's already a session
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        
-        logDebug('Session check performed', 'Yes');
-        
-        if (session) {
-          logDebug('User authenticated', 'Yes');
-          logDebug('User ID', session.user.id);
-          setSessionStatus('authenticated');
-          return;
-        }
-        
-        // No existing session, so check for a code in the URL
         const queryParams = new URLSearchParams(window.location.search);
         const code = queryParams.get('code');
         
-        if (code) {
-          logDebug('Auth code found', code);
-          
-          // Exchange the code for a session - the key step we were missing
-          const { data, error: codeError } = await supabase.auth.exchangeCodeForSession(code);
-          
-          if (codeError) {
-            logDebug('Code exchange error', codeError.message);
-            setError(`Authentication error: ${codeError.message}`);
-            setSessionStatus('not-authenticated');
-            return;
-          }
-          
-          if (data?.session) {
-            logDebug('Session established', 'Yes');
-            logDebug('User ID', data.session.user.id);
-            setSessionStatus('authenticated');
-            return;
-          }
+        if (!code) {
+          setError('No valid authentication code found. Please request a password reset link from the app.');
+          setSessionStatus('not-authenticated');
+          return;
+        }
+        
+        logDebug('Auth code found', 'Yes');
+        
+        // Exchange the code for a session and wait for it to complete
+        const { data, error: codeError } = await supabase.auth.exchangeCodeForSession(code);
+        
+        if (codeError) {
+          logDebug('Code exchange error', codeError.message);
+          setError(`Authentication error: ${codeError.message}`);
+          setSessionStatus('not-authenticated');
+          return;
+        }
+        
+        if (data?.session) {
+          // Session successfully established
+          logDebug('Session established', 'Yes');
+          logDebug('User ID', data.session.user.id);
+          setSessionStatus('authenticated');
         } else {
-          logDebug('No auth code found', 'true');
-          setError('No valid authentication found. Please request a password reset link from the app.');
+          logDebug('No session after code exchange', 'true');
+          setError('Failed to establish a session. Please request a new password reset link.');
           setSessionStatus('not-authenticated');
         }
       } catch (err) {
@@ -115,31 +106,29 @@ const logDebug = (label: string, value: string | number | boolean) => {
     setMessage('');
     
     try {
-      // Update password using the existing session
-      const { error: updateError } = await supabase.auth.updateUser({
-        password: password
-      });
-      
-      if (updateError) throw updateError;
-      
-      setMessage('Password updated successfully! You can now return to the app and log in with your new password.');
-    } catch (error: unknown) {
-        console.error("Password update error:", error);
+        // Verify we still have a valid session before updating
+        const { data: { session } } = await supabase.auth.getSession();
         
-        // Safely access the error message with type checking
-        if (error instanceof Error) {
-          setError(error.message);
-        } else if (typeof error === 'object' && error !== null && 'message' in error) {
-          // Handle case where error is an object with a message property but not an Error instance
-          setError((error as { message: string }).message);
-        } else {
-          // Fallback for other error types
-          setError('Failed to update password. Please try again.');
+        if (!session) {
+          setError("Your session has expired. Please request a new password reset link.");
+          setSessionStatus('not-authenticated');
+          return;
         }
+        
+        // Update the password using the current session
+        const { error: updateError } = await supabase.auth.updateUser({
+          password: password
+        });
+        
+        if (updateError) throw updateError;
+        
+        setMessage('Password updated successfully! You can now return to the app and log in with your new password.');
+      } catch (error) {
+        // Your existing error handling
       } finally {
         setLoading(false);
       }
-  };
+    };
 
   const openApp = () => {
     window.location.href = 'preptalk://reset-success';

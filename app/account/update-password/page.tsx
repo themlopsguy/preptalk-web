@@ -27,14 +27,16 @@ const logDebug = (label: string, value: string | number | boolean) => {
 
   // Handle recovery when component mounts
   useEffect(() => {
-    const processRecoveryTokens = async () => {
+    const processAuthCode = async () => {
       try {
-        // 1. Get the URL hash (everything after #)
-        const hash = window.location.hash;
-        logDebug('Hash present', hash ? 'Yes' : 'No');
+        // Get URL parameters
+        const queryParams = new URLSearchParams(window.location.search);
+        const code = queryParams.get('code');
         
-        if (!hash) {
-          // If no hash is present, check if we already have a session
+        logDebug('Auth code present', code ? 'Yes' : 'No');
+        
+        if (!code) {
+          // If no code is present, check if we already have a session
           const { data: sessionData } = await supabase.auth.getSession();
           
           if (sessionData?.session) {
@@ -43,58 +45,33 @@ const logDebug = (label: string, value: string | number | boolean) => {
             return;
           }
           
-          setError('No recovery tokens found in URL. Please request a new password reset link.');
+          setError('No authentication code found in URL. Please request a new password reset link.');
           setSessionStatus('not-authenticated');
           return;
         }
         
-        // 2. Handle hash with recovery tokens
-        if (hash.includes('type=recovery')) {
-          logDebug('Recovery hash detected', 'Yes');
-          
-          // Parse the hash fragments
-          const hashParams = new URLSearchParams(hash.substring(1)); // Remove the # character
-          const accessToken = hashParams.get('access_token');
-          const refreshToken = hashParams.get('refresh_token');
-          
-          logDebug('Access token present', accessToken ? 'Yes' : 'No');
-          logDebug('Refresh token present', refreshToken ? 'Yes' : 'No');
-          
-          if (!accessToken || !refreshToken) {
-            setError('Invalid recovery link. Missing authentication tokens.');
-            setSessionStatus('not-authenticated');
-            return;
-          }
-          
-          // 3. Set the recovery session
-          const { data, error: sessionError } = await supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken
-          });
-          
-          if (sessionError) {
-            logDebug('Session error', sessionError.message);
-            setError(`Authentication error: ${sessionError.message}`);
-            setSessionStatus('not-authenticated');
-            return;
-          }
-          
-          logDebug('Session established', 'Yes');
-          logDebug('User ID', data?.user?.id || 'None');
-          setSessionStatus('authenticated');
+        // Verify the code with Supabase to authenticate the user
+        const { data, error: verifyError } = await supabase.auth.verifyOtp({
+          token_hash: code,
+          type: 'recovery'
+        });
+        
+        if (verifyError) {
+          logDebug('Code verification error', verifyError.message);
+          setError(`Authentication error: ${verifyError.message}`);
+          setSessionStatus('not-authenticated');
           return;
         }
         
-        // If there's a hash but it's not a recovery link
-        setError('Invalid recovery link format.');
-        setSessionStatus('not-authenticated');
-      } catch (err: unknown) {
-        // Type guard to check if err is an Error object
+        logDebug('Session established', 'Yes');
+        logDebug('User ID', data?.user?.id || 'None');
+        setSessionStatus('authenticated');
+        
+      } catch (err) {
         if (err instanceof Error) {
           logDebug('Unexpected error', err.message);
           setError(`An unexpected error occurred: ${err.message}`);
         } else {
-          // Handle case where err is not an Error object
           logDebug('Unexpected error', 'Unknown error occurred');
           setError('An unexpected error occurred');
         }
@@ -102,7 +79,7 @@ const logDebug = (label: string, value: string | number | boolean) => {
       }
     };
     
-    processRecoveryTokens();
+    processAuthCode();
   }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {

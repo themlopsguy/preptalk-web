@@ -8,7 +8,14 @@ import { FormEvent } from 'react';
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      storageKey: 'supabase.auth.token',
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true // Enables detecting tokens in the URL
+    }
+  });
 
 export default function UpdatePassword() {
   const [password, setPassword] = useState('');
@@ -29,39 +36,44 @@ const logDebug = (label: string, value: string | number | boolean) => {
   useEffect(() => {
     const handlePasswordReset = async () => {
       try {
-        // 1. First check if the user is already authenticated
-        // This should happen automatically if they clicked a valid reset link
+        // First check if there's already a session
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
         logDebug('Session check performed', 'Yes');
         
-        if (sessionError) {
-          logDebug('Session error', sessionError.message);
-          setError(`Authentication error: ${sessionError.message}`);
-          setSessionStatus('not-authenticated');
-          return;
-        }
-        
         if (session) {
-          // The user is already authenticated from clicking the reset link
           logDebug('User authenticated', 'Yes');
           logDebug('User ID', session.user.id);
           setSessionStatus('authenticated');
-        } else {
-          // No session found - either the link was invalid or expired
-          logDebug('No session found', 'Yes');
+          return;
+        }
+        
+        // No existing session, so check for a code in the URL
+        const queryParams = new URLSearchParams(window.location.search);
+        const code = queryParams.get('code');
+        
+        if (code) {
+          logDebug('Auth code found', code);
           
-          // Check if we have an auth code in URL, indicating a failed authentication attempt
-          const queryParams = new URLSearchParams(window.location.search);
-          const code = queryParams.get('code');
+          // Exchange the code for a session - the key step we were missing
+          const { data, error: codeError } = await supabase.auth.exchangeCodeForSession(code);
           
-          if (code) {
-            logDebug('Auth code found but no session', code);
-            setError('The password reset link is invalid or has expired. Please request a new one.');
-          } else {
-            setError('No valid authentication found. Please request a password reset link from the app.');
+          if (codeError) {
+            logDebug('Code exchange error', codeError.message);
+            setError(`Authentication error: ${codeError.message}`);
+            setSessionStatus('not-authenticated');
+            return;
           }
           
+          if (data?.session) {
+            logDebug('Session established', 'Yes');
+            logDebug('User ID', data.session.user.id);
+            setSessionStatus('authenticated');
+            return;
+          }
+        } else {
+          logDebug('No auth code found', 'true');
+          setError('No valid authentication found. Please request a password reset link from the app.');
           setSessionStatus('not-authenticated');
         }
       } catch (err) {

@@ -50,15 +50,12 @@ const logDebug = (label: string, value: string | number | boolean) => {
           return;
         }
         
-        // Verify the code with Supabase to authenticate the user
-        const { data, error: verifyError } = await supabase.auth.verifyOtp({
-          token_hash: code,
-          type: 'recovery'
-        });
+        // Exchange the code for a session
+        const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
         
-        if (verifyError) {
-          logDebug('Code verification error', verifyError.message);
-          setError(`Authentication error: ${verifyError.message}`);
+        if (exchangeError) {
+          logDebug('Code verification error', exchangeError.message);
+          setError(`Authentication error: ${exchangeError.message}`);
           setSessionStatus('not-authenticated');
           return;
         }

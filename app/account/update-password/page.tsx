@@ -20,22 +20,57 @@ export default function UpdatePassword() {
   // Check for recovery session when component mounts
   useEffect(() => {
     const checkSession = async () => {
-      const { data, error } = await supabase.auth.getSession();
+      // 1. Get the hash fragment from the URL
+      const hash = window.location.hash;
       
-      console.log("Session check:", data);
-      
-      if (error) {
-        console.error("Session error:", error);
-        setSessionStatus('not-authenticated');
-        setError("Authentication error. This reset link may have expired.");
-        return;
-      }
-      
-      if (data?.session) {
-        setSessionStatus('authenticated');
+      // 2. Check if we have recovery tokens in the URL
+      if (hash && hash.includes('type=recovery')) {
+        // Parse the hash to get access_token and refresh_token
+        const params = new URLSearchParams(hash.substring(1));
+        const access_token = params.get('access_token');
+        const refresh_token = params.get('refresh_token');
+        
+        // Make sure both tokens exist before proceeding
+        if (access_token && refresh_token) {
+          try {
+            // 3. Set the session with the recovery tokens
+            const { data, error } = await supabase.auth.setSession({
+              access_token,
+              refresh_token
+            });
+            
+            if (error) throw error;
+            
+            console.log("Recovery session established:", data);
+            setSessionStatus('authenticated');
+            return;
+          } catch (error) {
+            console.error("Error setting recovery session:", error);
+          }
+        } else {
+          console.error("Missing required tokens in recovery URL");
+          setSessionStatus('not-authenticated');
+          setError("Invalid password reset link. Some required parameters are missing.");
+        }
       } else {
-        setSessionStatus('not-authenticated');
-        setError("No active reset session. This reset link may have expired or already been used.");
+        // Fall back to checking for an existing session if no tokens in URL
+        const { data, error } = await supabase.auth.getSession();
+        
+        console.log("Session check:", data);
+        
+        if (error) {
+          console.error("Session error:", error);
+          setSessionStatus('not-authenticated');
+          setError("Authentication error. This reset link may have expired.");
+          return;
+        }
+        
+        if (data?.session) {
+          setSessionStatus('authenticated');
+        } else {
+          setSessionStatus('not-authenticated');
+          setError("No active reset session. This reset link may have expired or already been used.");
+        }
       }
     };
     

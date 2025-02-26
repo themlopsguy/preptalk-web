@@ -90,8 +90,8 @@ const logDebug = (label: string, value: string | number | boolean) => {
       return;
     }
     
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters');
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters');
       return;
     }
     
@@ -128,62 +128,68 @@ const logDebug = (label: string, value: string | number | boolean) => {
     window.location.href = 'preptalk://reset-success';
   };
 
-  return (
-    <div className="max-w-md mx-auto p-6 md:p-10">
-      <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold mb-2">Reset Your Password</h1>
-        <p className="text-gray-600">
-          Enter your new password below
-        </p>
-      </div>
-      
-      {/* Debug panel - can be removed in production */}
-      <div className="bg-gray-100 p-4 mb-6 text-xs rounded">
-        <h3 className="font-bold mb-2">Debug Info:</h3>
-        <pre className="whitespace-pre-wrap overflow-auto max-h-40">
-          {JSON.stringify(debugInfo, null, 2)}
-        </pre>
-      </div>
-      
-      {sessionStatus === 'loading' && (
+    // Fallback if deep link doesn't work
+    // setTimeout(() => {
+    //     if (document.visibilityState === 'visible') {
+    //       setMessage(prev => 
+    //         prev + " If the app doesn't open, you may need to install it first."
+    //       );
+    //     }
+    //   }, 1000);
+    // };
+
+  // Render different UI components based on state
+  const renderContent = () => {
+    // Show loading spinner during authentication
+    if (sessionStatus === 'loading') {
+      return (
         <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-300 border-t-blue-600"></div>
+          <div className="inline-block animate-spin rounded-full h-10 w-10 border-4 border-gray-300 border-t-blue-600"></div>
           <p className="mt-4 text-gray-600">Verifying your reset link...</p>
         </div>
-      )}
-      
-      {sessionStatus === 'not-authenticated' && (
-        <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">
-          <p>{error || "This password reset link is invalid or has expired."}</p>
-          <p className="mt-2">Please return to the app and request a new password reset link.</p>
+      );
+    }
+    
+    // Show error message and app return button for failed authentication
+    if (sessionStatus === 'not-authenticated') {
+      return (
+        <div className="bg-red-100 text-red-800 p-6 rounded-lg shadow-sm mb-6">
+          <p className="font-medium">{error || "This password reset link is invalid or has expired."}</p>
+          <p className="mt-3">Please return to the app and request a new password reset link.</p>
           <button 
             onClick={openApp}
-            className="block w-full mt-4 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+            className="block w-full mt-5 bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors font-medium"
           >
             Return to App
           </button>
         </div>
-      )}
-      
-      {message && (
-        <div className="bg-green-100 text-green-800 p-4 rounded-md mb-6">
-          {message}
+      );
+    }
+    
+    // Show success message after password update
+    if (message) {
+      return (
+        <div className="bg-green-100 text-green-800 p-6 rounded-lg shadow-sm mb-6">
+          <p className="font-medium">{message}</p>
           <button 
             onClick={openApp}
-            className="block w-full mt-4 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors"
+            className="block w-full mt-5 bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 transition-colors font-medium"
           >
             Return to App
           </button>
         </div>
-      )}
-      
-      {error && sessionStatus === 'authenticated' && (
-        <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">
-          {error}
-        </div>
-      )}
-      
-      {sessionStatus === 'authenticated' && !message && (
+      );
+    }
+    
+    // Show password form for authenticated users
+    return (
+      <>
+        {error && (
+          <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">
+            <p>{error}</p>
+          </div>
+        )}
+        
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label 
@@ -197,8 +203,10 @@ const logDebug = (label: string, value: string | number | boolean) => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
+              minLength={6}
+              placeholder="Enter your new password"
             />
           </div>
           
@@ -214,8 +222,10 @@ const logDebug = (label: string, value: string | number | boolean) => {
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
+              minLength={6}
+              placeholder="Confirm your new password"
             />
           </div>
           
@@ -224,16 +234,58 @@ const logDebug = (label: string, value: string | number | boolean) => {
             disabled={loading}
             className={`w-full py-3 bg-blue-600 text-white rounded-md font-medium ${
               loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-blue-700'
-            }`}
+            } transition-all duration-200 shadow-sm`}
           >
-            {loading ? 'Updating...' : 'Update Password'}
+            {loading ? (
+              <span className="flex items-center justify-center">
+                <span className="inline-block animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></span>
+                Updating...
+              </span>
+            ) : 'Update Password'}
           </button>
         </form>
-      )}
+      </>
+    );
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col items-center justify-center p-6">
+      <div className="w-full max-w-md mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+        {/* Header with logo and title */}
+        <div className="p-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-center">
+          <div className="mb-3 flex justify-center">
+          </div>
+          <h1 className="text-2xl font-bold">Reset Your Password</h1>
+          <p className="text-blue-100 mt-1">
+            Create a new secure password for your PrepTalk account
+          </p>
+        </div>
+        
+        {/* Main content area */}
+        <div className="p-6">
+          {renderContent()}
+          
+          {/* App return link */}
+          <p className="text-center text-sm text-gray-600 mt-6">
+            Return to <a href="preptalk://" className="text-blue-600 hover:text-blue-800 font-medium">PrepTalk App</a>
+          </p>
+        </div>
+      </div>
       
-      <p className="text-center text-sm text-gray-600 mt-8">
-        Return to <a href="preptalk://" className="text-blue-600">PrepTalk App</a>
-      </p>
+      {/* Footer */}
+      <div className="mt-8 text-center text-gray-500 text-xs">
+        <p>&copy; 2025 PrepTalk. All rights reserved.</p>
+      </div>
+      
+      {/* Debug panel - only shown in development */}
+      {process.env.NODE_ENV !== 'production' && Object.keys(debugInfo).length > 0 && (
+        <div className="mt-8 p-4 bg-gray-100 rounded-md text-xs max-w-md w-full">
+          <h3 className="font-bold mb-2 text-gray-700">Debug Info:</h3>
+          <pre className="whitespace-pre-wrap overflow-auto max-h-40 text-gray-600">
+            {JSON.stringify(debugInfo, null, 2)}
+          </pre>
+        </div>
+      )}
     </div>
   );
 }

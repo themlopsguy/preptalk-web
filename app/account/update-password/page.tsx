@@ -1,17 +1,14 @@
 'use client';
 
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import Image from 'next/image';
+import { FormEvent } from 'react';
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true
-  }
-});
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function UpdatePassword() {
   const [password, setPassword] = useState('');
@@ -22,50 +19,61 @@ export default function UpdatePassword() {
   const [sessionStatus, setSessionStatus] = useState('loading');
   const [debugInfo, setDebugInfo] = useState({});
 
-  // Function for debug logging
-  const logDebug = (label: string, value: any) => {
+  // Function for debug logging that shows up in the UI
+// Function for debug logging that shows up in the UI
+const logDebug = (label: string, value: string | number | boolean) => {
     setDebugInfo(prev => ({ ...prev, [label]: value }));
   };
 
-  // Check for authentication on component mount
+  // Handle recovery when component mounts
   useEffect(() => {
-    const checkAuthentication = async () => {
+    const handlePasswordReset = async () => {
       try {
-        // With the new flow, the user should be authenticated after 
-        // being redirected from /auth/confirm
-        const { data, error } = await supabase.auth.getSession();
+        // Check for hash parameter
+        const queryParams = new URLSearchParams(window.location.search);
+        const hash = queryParams.get('hash');
         
-        logDebug('Session check performed', 'Yes');
-        
-        if (error) {
-          logDebug('Session error', error.message);
-          setError('Authentication error: ' + error.message);
-          setSessionStatus('not-authenticated');
+        if (hash) {
+          // Use TokenHash with verifyOtp
+          const { data, error } = await supabase.auth.verifyOtp({
+            token_hash: hash,
+            type: 'recovery'
+          });
+          
+          if (error) {
+            logDebug('Token verification error', error.message);
+            setError(`Authentication error: ${error.message}`);
+            setSessionStatus('not-authenticated');
+            return;
+          }
+          
+          // Success - user should now be authenticated
+          setSessionStatus('authenticated');
           return;
         }
         
-        if (data.session) {
-          logDebug('User authenticated', 'Yes');
-          logDebug('User ID', data.session.user.id);
-          setSessionStatus('authenticated');
+        // Fallback to your existing code for handling code parameter
+        const code = queryParams.get('code');
+        if (code) {
+          // Your existing code exchange logic...
         } else {
-          logDebug('No active session', 'Yes');
-          setError('No active session found. The password reset link may have expired.');
+          // No valid parameters found
+          setError('No valid authentication parameters found.');
           setSessionStatus('not-authenticated');
         }
       } catch (err) {
         if (err instanceof Error) {
           logDebug('Unexpected error', err.message);
-          setError('An unexpected error occurred: ' + err.message);
+          setError(`An unexpected error occurred: ${err.message}`);
         } else {
-          logDebug('Unexpected error', 'Unknown error');
+          logDebug('Unexpected error', 'Unknown error occurred');
           setError('An unexpected error occurred');
         }
         setSessionStatus('not-authenticated');
       }
     };
     
-    checkAuthentication();
+    handlePasswordReset();
   }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -92,27 +100,34 @@ export default function UpdatePassword() {
     setMessage('');
     
     try {
-      // Update the user's password
-      const { error: updateError } = await supabase.auth.updateUser({
-        password: password
-      });
-      
-      if (updateError) throw updateError;
-      
-      setMessage('Password updated successfully! You can now return to the app and log in with your new password.');
-    } catch (error: any) {
-      console.error("Password update error:", error);
-      setError(error.message || 'Failed to update password. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+        // Verify we still have a valid session before updating
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!session) {
+          setError("Your session has expired. Please request a new password reset link.");
+          setSessionStatus('not-authenticated');
+          return;
+        }
+        
+        // Update the password using the current session
+        const { error: updateError } = await supabase.auth.updateUser({
+          password: password
+        });
+        
+        if (updateError) throw updateError;
+        
+        setMessage('Password updated successfully! You can now return to the app and log in with your new password.');
+      } catch (error) {
+        // Your existing error handling
+      } finally {
+        setLoading(false);
+      }
+    };
 
   const openApp = () => {
     window.location.href = 'preptalk://reset-success';
   };
 
-  // Rest of your JSX remains the same...
   return (
     <div className="max-w-md mx-auto p-6 md:p-10">
       <div className="text-center mb-8">
@@ -122,7 +137,7 @@ export default function UpdatePassword() {
         </p>
       </div>
       
-      {/* Debug panel */}
+      {/* Debug panel - can be removed in production */}
       <div className="bg-gray-100 p-4 mb-6 text-xs rounded">
         <h3 className="font-bold mb-2">Debug Info:</h3>
         <pre className="whitespace-pre-wrap overflow-auto max-h-40">
@@ -133,13 +148,13 @@ export default function UpdatePassword() {
       {sessionStatus === 'loading' && (
         <div className="text-center py-8">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-300 border-t-blue-600"></div>
-          <p className="mt-4 text-gray-600">Verifying your authentication...</p>
+          <p className="mt-4 text-gray-600">Verifying your reset link...</p>
         </div>
       )}
       
       {sessionStatus === 'not-authenticated' && (
         <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">
-          <p>{error || "Your password reset session has expired or is invalid."}</p>
+          <p>{error || "This password reset link is invalid or has expired."}</p>
           <p className="mt-2">Please return to the app and request a new password reset link.</p>
           <button 
             onClick={openApp}

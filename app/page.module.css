@@ -1,168 +1,503 @@
-.page {
-  --gray-rgb: 0, 0, 0;
-  --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
-  --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
-
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-
-  display: grid;
-  grid-template-rows: 20px 1fr 20px;
-  align-items: center;
-  justify-items: center;
-  min-height: 100svh;
-  padding: 80px;
-  gap: 64px;
+/* Base Styles */
+.homepage {
+  padding-top: 0px; /* Adjust based on your navbar height + margin */
+  --primary-color: #1097D6;
+  --primary-dark: #0973a4;
+  --secondary-color: #5a5a5a;
+  --text-color: #333333;
+  --light-text: #6c757d;
+  --background-color: #ffffff;
+  --light-bg: #f8f9fa;
+  --border-color: #e9ecef;
+  
+  color: var(--text-color);
+  background-color: var(--background-color);
   font-family: var(--font-geist-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  .page {
-    --gray-rgb: 255, 255, 255;
-    --gray-alpha-200: rgba(var(--gray-rgb), 0.145);
-    --gray-alpha-100: rgba(var(--gray-rgb), 0.06);
-
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-  }
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
-.main {
+/* Navigation */
+.navbar {
+  position: fixed; /* Make navbar stay fixed when scrolling */
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%); /* Center the navbar */
+  z-index: 1000; /* Ensure navbar stays on top of other content */
+  padding: 8px 0;
+  background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent background */
+  backdrop-filter: blur(10px); /* Glass effect with blur */
+  -webkit-backdrop-filter: blur(10px); /* For Safari support */
+  border-bottom: none; /* Remove the previous border */
+  transition: background-color 0.3s ease;
+  margin: 12px; /* Add margin around the navbar */
+  border-radius: 35px; /* Rounded corners */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* Subtle shadow for depth */
+  width: 95%; /* Set width to be slightly less than full width */
+  max-width: 1200px; /* Match your main container max-width */
+}
+
+.navbar .container {
   display: flex;
-  flex-direction: column;
-  gap: 32px;
-  grid-row-start: 2;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.main ol {
-  font-family: var(--font-geist-mono);
-  padding-left: 0;
-  margin: 0;
-  font-size: 14px;
-  line-height: 24px;
-  letter-spacing: -0.01em;
-  list-style-position: inside;
-}
-
-.main li:not(:last-of-type) {
-  margin-bottom: 8px;
-}
-
-.main code {
-  font-family: inherit;
-  background: var(--gray-alpha-100);
-  padding: 2px 4px;
-  border-radius: 4px;
-  font-weight: 600;
-}
-
-.ctas {
-  display: flex;
-  gap: 16px;
-}
-
-.ctas a {
-  appearance: none;
-  border-radius: 128px;
-  height: 48px;
-  padding: 0 20px;
-  border: none;
-  border: 1px solid transparent;
-  transition:
-    background 0.2s,
-    color 0.2s,
-    border-color 0.2s;
-  cursor: pointer;
+.logo {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  line-height: 20px;
-  font-weight: 500;
 }
 
-a.primary {
-  background: var(--foreground);
-  color: var(--background);
-  gap: 8px;
-}
-
-a.secondary {
-  border-color: var(--gray-alpha-200);
-  min-width: 180px;
-}
-
-.footer {
-  grid-row-start: 3;
+.navLinks {
   display: flex;
   gap: 24px;
 }
 
-.footer a {
+.navLink {
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+
+.navLink:last-child {
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 20px;
+  padding: 8px 18px;
+  margin-left: 8px;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(24, 118, 165, 0.2);
+  transition: all 0.3s ease;
+}
+
+.navLink:last-child::after {
+  content: "»"; /* Changed to double chevrons */
+  position: absolute; /* Position absolutely */
+  right: 12px; /* Position from right edge */
+  opacity: 0;
+  transform: translateX(10px);
+  transition: all 0.3s ease;
+}
+
+.navLink:hover {
+  color: var(--primary-color);
+  background-color: rgba(24, 118, 165, 0.08);
+}
+
+.navLink:last-child:hover {
+  background-color: var(--primary-dark);
+  padding-right: 28px;
+  color: white;
+}
+
+.navLink:last-child:hover::after {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Hero Section */
+.hero {
+  /*padding: 10px 0;*/
+  margin-top: -70px;
+  background: linear-gradient(to top, #1097D6, #c4eaff);
+  position: relative; /* Create positioning context */
+  overflow: visible; /* Allow content to extend outside */
+  margin-bottom: 10px;
+}
+
+.hero .container {
+  /*padding-top: 10px;*/
+  display: flex;
+  align-items: center;
+  /*gap: 40px; /* Reduced from 60px */
+}
+
+.heroContent {
+  flex: 1;
+}
+
+.heroTitle {
+  padding-top: 200px;
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 16px;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.heroSubtitle {
+  font-size: 20px;
+  line-height: 1.6;
+  color: #ffffff;
+  margin-bottom: 32px;
+}
+
+.heroButtons {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.heroImage {
+  flex: 1; /* Increase the flex ratio to give more space to the image */
+  display: flex;
+  justify-content: center;
+  padding-right: 100px;
+  position: relative;
+}
+
+.phoneMockup {
+  position: relative;
+  z-index: 2;
+  max-width: 150%; /* Allow image to be larger than its container */
+  height: auto;
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.15));
+  transform: translateY(20%);
+}
+
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  background: var(--primary-color);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.primaryButton:hover {
+  background: var(--primary-dark);
+}
+
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  color: var(--primary-color);
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 2px solid var(--primary-color);
+  transition: all 0.2s ease;
+}
+
+.secondaryButton:hover {
+  background: rgba(24, 118, 165, 0.05);
+}
+
+.appStoreBadge {
+  height: auto;
+}
+
+/* Features Section */
+.features {
+  position: relative;
+  z-index: 1; /* Ensure this is lower than the hero image z-index */
+  padding-top: 160px;
+}
+
+.sectionTitle {
+  font-size: 36px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 48px;
+  color: #1a1a1a;
+}
+
+.featureGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 32px;
+}
+
+.featureCard {
+  background: white;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.featureCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.featureIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: rgba(24, 118, 165, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  color: var(--primary-color);
+}
+
+.featureTitle {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #1a1a1a;
+}
+
+.featureDescription {
+  color: var(--light-text);
+  line-height: 1.6;
+}
+
+/* How It Works Section */
+.howItWorks {
+  padding: 100px 0;
+  background-color: var(--light-bg);
+}
+
+.steps {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.step {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.stepNumber {
+  min-width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.stepTitle {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #1a1a1a;
+}
+
+.stepDescription {
+  color: var(--light-text);
+  line-height: 1.6;
+}
+
+/* Testimonials Section */
+.testimonials {
+  padding: 100px 0;
+  background-color: var(--background-color);
+}
+
+.testimonialGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+}
+
+.testimonialCard {
+  background: white;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.testimonialStars {
+  color: #ffc107;
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.testimonialText {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  font-style: italic;
+  color: #1a1a1a;
+}
+
+.testimonialAuthor {
+  color: var(--light-text);
+  font-weight: 600;
+}
+
+/* Download CTA Section */
+.downloadCta {
+  padding: 100px 0;
+  background: linear-gradient(to right, #1876A5, #0d5f88);
+  color: white;
+  text-align: center;
+}
+
+.ctaTitle {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.ctaDescription {
+  font-size: 20px;
+  max-width: 600px;
+  margin: 0 auto 32px;
+  opacity: 0.9;
+}
+
+.downloadCta .primaryButton {
+  background: white;
+  color: var(--primary-color);
+  margin: 0 auto;
+}
+
+.downloadCta .primaryButton:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* Footer */
+.footer {
+  padding: 80px 0 40px;
+  background-color: #1a1a1a;
+  color: white;
+}
+
+.footerTop {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 48px;
+}
+
+.footerLogo {
+  max-width: 300px;
+}
+
+.footerTagline {
+  margin-top: 16px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.footerLinks {
+  display: flex;
+  gap: 48px;
+}
+
+.footerLinkTitle {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: white;
+}
+
+.footerLinkGroup {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
-.footer img {
-  flex-shrink: 0;
+.footerLink {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
-/* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  a.primary:hover {
-    background: var(--button-primary-hover);
-    border-color: transparent;
-  }
-
-  a.secondary:hover {
-    background: var(--button-secondary-hover);
-    border-color: transparent;
-  }
-
-  .footer a:hover {
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
+.footerLink:hover {
+  color: white;
 }
 
-@media (max-width: 600px) {
-  .page {
-    padding: 32px;
-    padding-bottom: 80px;
-  }
-
-  .main {
-    align-items: center;
-  }
-
-  .main ol {
-    text-align: center;
-  }
-
-  .ctas {
-    flex-direction: column;
-  }
-
-  .ctas a {
-    font-size: 14px;
-    height: 40px;
-    padding: 0 16px;
-  }
-
-  a.secondary {
-    min-width: auto;
-  }
-
-  .footer {
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-  }
+.footerBottom {
+  padding-top: 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
+.copyright {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+}
+
+.socialLinks {
+  display: flex;
+  gap: 16px;
+}
+
+.socialLink {
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 0.2s ease;
+}
+
+.socialLink:hover {
+  color: white;
+}
+
+/* Dark Mode Styles */
 @media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
+  .homepage {
+    --text-color: #f5f5f7;
+    --light-text: #a7a7a7;
+    --background-color: #121212;
+    --light-bg: #1a1a1a;
+    --border-color: #2c2c2c;
+  }
+  
+  .navbar {
+    background-color: rgba(18, 18, 18, 0.7);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .hero {
+    background: linear-gradient(to right, #121212, #133240);
+  }
+  
+  .heroTitle {
+    color: white;
+  }
+  
+  .featureCard {
+    background: #1e1e1e;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+  
+  .featureTitle {
+    color: white;
+  }
+  
+  .stepTitle {
+    color: white;
+  }
+  
+  .testimonialCard {
+    background: #1e1e1e;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+  
+  .testimonialText {
+    color: white;
   }
 }

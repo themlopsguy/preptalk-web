@@ -55,7 +55,7 @@ export default function Home() {
           </div>
           <div className={styles.heroImage}>
             <Image 
-              src="/hero-image.png" 
+              src="/hero-image-half.png" 
               alt="PrepTalk app on iPhone" 
               width={875} 
               height={1540}

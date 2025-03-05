@@ -60,6 +60,7 @@ export default function Home() {
               width={875} 
               height={1540}
               quality={100}
+              priority={true}
               className={styles.phoneMockup}
             />
           </div>

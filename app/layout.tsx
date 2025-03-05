@@ -29,6 +29,7 @@ export default function RootLayout({
           rel="preload"
           href="/hero-image.png"
           as="image"
+          fetchPriority="high"
         />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>

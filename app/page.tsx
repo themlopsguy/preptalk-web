@@ -39,7 +39,7 @@ export default function Home() {
           <div className={styles.heroContent}>
             <h1 className={styles.heroTitle}>The #1 Interview Acing App</h1>
             <p className={styles.heroSubtitle}>
-              PrepTalk is a free app dedicated to helping you get more job offers. The app helps you improve your interview skills to make getting hired easier.
+              PrepTalk is a free app dedicated to helping you get more job offers. The app analyzes your interview performance to make getting hired easier.
             </p>
             <div className={styles.heroButtons}>
               <a href="https://apps.apple.com/us/app/preptalk-ai-job-interviews/id6740067315?itscg=30200&itsct=apps_box_badge&mttnsubad=6740067315">

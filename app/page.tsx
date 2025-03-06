@@ -19,7 +19,7 @@ export default function Home() {
               src="/logo.svg" 
               alt="PrepTalk Logo" 
               width={130} 
-              height={30} 
+              height={40} 
               priority
             />
           </div>
@@ -70,45 +70,63 @@ export default function Home() {
       {/* How It Works Section */}
       <section className={styles.howItWorks}>
         <div className={styles.container}>
-          <h2 className={styles.sectionTitle}>How PrepTalk Works</h2>
-          
           <div className={styles.steps}>
             <div className={styles.step}>
-              <div className={styles.stepNumber}>1</div>
               <div className={styles.stepContent}>
-                <h3 className={styles.stepTitle}>Upload your resume</h3>
+              <div className={styles.stepNumber}><Image 
+                                                    src="/personalized_interview.svg" 
+                                                    alt="Personalized Interviews"
+                                                    width={200}
+                                                    height={75}
+                                                    quality={100}/></div>
+                <h3 className={styles.stepTitle}>Personalized Interviews</h3>
                 <p className={styles.stepDescription}>
-                  Upload your resume and enter your target job description to help our AI understand your goals
+                  Using your resume and desired job posting, conduct custom realistic interviews with the most advanced conversational AI.
                 </p>
               </div>
             </div>
             
             <div className={styles.step}>
-              <div className={styles.stepNumber}>2</div>
               <div className={styles.stepContent}>
-                <h3 className={styles.stepTitle}>Practice interviews</h3>
+              <div className={styles.stepNumber}><Image 
+                                                    src="/analysis.svg" 
+                                                    alt="Analysis"
+                                                    width={200}
+                                                    height={75}
+                                                    quality={100}/></div>
+                <h3 className={styles.stepTitle}>Performance Analysis</h3>
                 <p className={styles.stepDescription}>
-                  Experience realistic interview simulations with AI-generated questions tailored to your profile
+                  PrepTalk provides in-depth analysis on how you perform during interviews based around communication, professionalism, story completion, and more.
                 </p>
               </div>
             </div>
             
             <div className={styles.step}>
-              <div className={styles.stepNumber}>3</div>
               <div className={styles.stepContent}>
-                <h3 className={styles.stepTitle}>Receive feedback</h3>
+              <div className={styles.stepNumber}><Image 
+                                                    src="/offer_likelihood.svg" 
+                                                    alt="Offer Likelihood"
+                                                    width={200}
+                                                    height={75}
+                                                    quality={100}/></div>
+                <h3 className={styles.stepTitle}>Offer likelihood</h3>
                 <p className={styles.stepDescription}>
-                  Get detailed feedback on your answers, with specific suggestions for improvement
+                  By assessing your professional experience, desired job details, and interview performance, you can see how likely you are to get a job offer.
                 </p>
               </div>
             </div>
             
             <div className={styles.step}>
-              <div className={styles.stepNumber}>4</div>
               <div className={styles.stepContent}>
-                <h3 className={styles.stepTitle}>Track your progress</h3>
+              <div className={styles.stepNumber}><Image 
+                                                    src="/prepscore.svg" 
+                                                    alt="PrepScore"
+                                                    width={200}
+                                                    height={75}
+                                                    quality={100}/></div>
+                <h3 className={styles.stepTitle}>PrepScore</h3>
                 <p className={styles.stepDescription}>
-                  Monitor your improvement over time and focus on areas that need more practice
+                  Every interview can increase or decrease your PrepScore. Get it above 800 and you are interview-ready!
                 </p>
               </div>
             </div>

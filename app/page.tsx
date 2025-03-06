@@ -1,18 +1,45 @@
+"use client"
+
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Metadata } from 'next';
 import styles from './page.module.css';
 
-export const metadata: Metadata = {
-  title: 'PrepTalk - AI-Powered Interview Preparation',
-  description: 'Master your next job interview with PrepTalk, the AI-powered interview coach that provides personalized practice interviews, performance feedback and analysis, and likelihood of getting an offer.',
-};
-
 export default function Home() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  // Close mobile menu when clicking outside or resizing to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 900 && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    };
+    
+    const handleClickOutside = (event: MouseEvent) => {
+      // First check if target is an Element
+      const target = event.target as Element;
+      
+      if (mobileMenuOpen && 
+          !target.closest(`.${styles.navLinks}`) && 
+          !target.closest(`.${styles.hamburger}`)) {
+        setMobileMenuOpen(false);
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
+    document.addEventListener('mousedown', handleClickOutside);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [mobileMenuOpen]);
+
   return (
     <div className={styles.homepage}>
       {/* Navigation Bar */}
-      <nav className={styles.navbar}>
+      <nav className={`${styles.navbar} ${mobileMenuOpen ? styles.menuOpen : ''}`}>
         <div className={styles.container}>
           <div className={styles.logo}>
             <Image 
@@ -23,12 +50,35 @@ export default function Home() {
               priority
             />
           </div>
-          <div className={styles.navLinks}>
-            <Link href="/support" className={styles.navLink}>How it works</Link>
-            <Link href="/privacy" className={styles.navLink}>Why PrepTalk?</Link>
-            <Link href="/privacy" className={styles.navLink}>Features</Link>
-            <Link href="/terms" className={styles.navLink}>Reviews</Link>
-            <Link href="https://apps.apple.com/us/app/preptalk-ai-job-interviews/id6740067315" className={styles.navLink}>Download Now</Link>
+          <button 
+            className={`${styles.hamburger} ${mobileMenuOpen ? styles.open : ''}`}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <div className={`${styles.navLinks} ${mobileMenuOpen ? styles.active : ''}`}>
+            <Link href="/support" className={styles.navLink} onClick={() => setMobileMenuOpen(false)}>
+              How it works
+            </Link>
+            <Link href="/privacy" className={styles.navLink} onClick={() => setMobileMenuOpen(false)}>
+              Why PrepTalk?
+            </Link>
+            <Link href="/privacy" className={styles.navLink} onClick={() => setMobileMenuOpen(false)}>
+              Features
+            </Link>
+            <Link href="/terms" className={styles.navLink} onClick={() => setMobileMenuOpen(false)}>
+              Reviews
+            </Link>
+            <Link 
+              href="https://apps.apple.com/us/app/preptalk-ai-job-interviews/id6740067315" 
+              className={styles.navLink}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Download Now
+            </Link>
           </div>
         </div>
       </nav>

@@ -525,7 +525,7 @@
   /* Special styling for the last link (Download Now) */
   .navLink:last-child {
     margin: 10px 0;
-    width: 30%;
+    width: 40%;
   }
   
   /* Hamburger icon animation */

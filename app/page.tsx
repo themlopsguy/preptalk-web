@@ -99,10 +99,10 @@ const scrollToSection = (elementId: string, e: React.MouseEvent<HTMLAnchorElemen
           <a href="#whyPreptalk" className={styles.navLink} onClick={(e) => scrollToSection('whyPreptalk', e)} >
               Why PrepTalk?
           </a>
-            <Link href="/privacy" className={styles.navLink} onClick={() => setMobileMenuOpen(false)}>
+            <Link href="#features" className={styles.navLink} onClick={(e) => scrollToSection('features', e)}>
               Features
             </Link>
-            <Link href="/terms" className={styles.navLink} onClick={() => setMobileMenuOpen(false)}>
+            <Link href="#reviews" className={styles.navLink} onClick={(e) => scrollToSection('reviews', e)}>
               Reviews
             </Link>
             <Link 
@@ -237,10 +237,13 @@ const scrollToSection = (elementId: string, e: React.MouseEvent<HTMLAnchorElemen
             <div className={styles.whyPrepTalkText}>
               <h2 className={styles.sectionTitle}>Realistic Interviews. Essential Feedback.</h2>
               <p className={styles.whyPrepTalkDescription}>
-                Get tailored interview questions based on your resume and target job description. 
-                Our AI-powered platform analyzes your responses and provides actionable feedback 
-                to help you improve your interview skills and increase your chances of landing 
-                your dream job.
+                At PrepTalk, we want to eliminate interview anxiety. So we built an intuitive interface that uses the most advanced conversational AI systems to enable you to have the most realistic interview experience possible.
+              </p>
+              <p className={styles.whyPrepTalkDescription}>
+                Your interviewer knows your resume, skillset, and the job you want so they can conduct and interview personalized for you.
+              </p>
+              <p className={styles.whyPrepTalkDescription}>
+                Paired with relevant feedback and beautiful data graphs, you can keep practicing, watch yourself improve, and be on your way to acing the real interview and receiving top job offers.
               </p>
             </div>
           </div>

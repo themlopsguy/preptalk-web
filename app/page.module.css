@@ -8,7 +8,7 @@
   --light-text: #6c757d;
   --background-color: #ffffff;
   --light-bg: #f8f9fa;
-  --border-color: #e9ecef;
+  --border-color: #d0d8df;
   
   color: var(--text-color);
   background-color: var(--background-color);
@@ -335,6 +335,54 @@
   font-weight: 150;
 }
 
+.styledDivider {
+  height: 3px;
+  background-color: var(--border-color);
+  width: 70%;
+  position: absolute; /* Change back to absolute positioning */
+  left: 50%; /* Position from the left edge of the parent */
+  transform: translateX(-50%); /* Offset by half its own width to center */
+  margin: 0; /* Remove margins */
+  z-index: 1; /* Ensure it's above other elements */
+}
+
+/* Why PrepTalk Section */
+.whyPreptalk {
+  padding: 100px 0;
+  background-color: var(--light-bg);
+}
+
+.whyPrepTalkContent {
+  display: flex;
+  align-items: flex-start;
+  gap: 100px;
+}
+
+.whyPrepTalkImage {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.whyPrepTalkText {
+  flex: 1;
+  padding: 60px 0;
+}
+
+.whyPrepTalkText .sectionTitle {
+  text-align: left;
+  margin-bottom: 24px;
+  font-size: 48px;
+  font-weight: 600;
+}
+
+.whyPrepTalkDescription {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--light-text);
+  max-width: 90%;
+}
+
 /* Testimonials Section */
 .testimonials {
   padding: 100px 0;
@@ -642,5 +690,25 @@
     font-size: 16px;
     max-width: 100%; /* Full width for description */
     text-align: center;
+  }
+
+  .whyPrepTalkContent {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .whyPrepTalkText .sectionTitle {
+    text-align: center;
+    font-size: 28px;
+  }
+  
+  .whyPrepTalkDescription {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  
+  .whyPrepTalkImage img {
+    max-width: 90%;
+    height: auto;
   }
 }

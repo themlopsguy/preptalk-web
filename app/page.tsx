@@ -217,6 +217,36 @@ const scrollToSection = (elementId: string, e: React.MouseEvent<HTMLAnchorElemen
         </div>
       </section>
 
+      <div className={styles.styledDivider}>
+        <span></span>
+      </div>
+
+      {/* Why PrepTalk? Section */}
+      <section id="whyPreptalk" className={styles.whyPreptalk}>
+        <div className={styles.container}>
+          <div className={styles.whyPrepTalkContent}>
+            <div className={styles.whyPrepTalkImage}>
+              <Image 
+                src="/why-preptalk.png" 
+                alt="Why-Preptalk"
+                width={550}
+                height={600}
+                quality={100}
+              />
+            </div>
+            <div className={styles.whyPrepTalkText}>
+              <h2 className={styles.sectionTitle}>Realistic Interviews. Essential Feedback.</h2>
+              <p className={styles.whyPrepTalkDescription}>
+                Get tailored interview questions based on your resume and target job description. 
+                Our AI-powered platform analyzes your responses and provides actionable feedback 
+                to help you improve your interview skills and increase your chances of landing 
+                your dream job.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section id="features" className={styles.features}>
         <div className={styles.container}>

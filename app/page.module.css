@@ -377,10 +377,11 @@
 }
 
 .whyPrepTalkDescription {
-  font-size: 18px;
-  font-weight: 300;
+  font-size: 16px;
+  font-family: var(--font-geist-sans);
+  font-weight: 200;
   line-height: 1.6;
-  color: var(--light-text);
+  color: black;
   max-width: 90%;
   margin-bottom: 32px;
   text-align: center;
@@ -690,9 +691,9 @@
   }
   
   .stepDescription {
-    font-size: 16px;
     max-width: 100%; /* Full width for description */
     text-align: center;
+    font-weight: 200;
   }
 
   .whyPrepTalkContent {
@@ -708,9 +709,7 @@
   }
   
   .whyPrepTalkDescription {
-    font-weight: 300;
     max-width: 90%;
-    color: var(--light-text);
     margin: 0 auto;
     text-align: center;
     margin-bottom: 32px;

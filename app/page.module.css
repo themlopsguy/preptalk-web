@@ -602,4 +602,45 @@
     margin-left: auto; /* Center the image using auto margins */
     margin-right: auto;
   }
+
+  .howItWorks {
+    padding: 120px 0 60px 0; /* Adjust padding for mobile */
+  }
+  
+  .steps {
+    flex-direction: column; /* Stack steps vertically */
+    gap: 60px; /* Increase space between stacked steps */
+    padding: 0 20px; /* Add some horizontal padding */
+  }
+  
+  .step {
+    width: 100%; /* Full width steps */
+    justify-content: center; /* Center step content */
+  }
+  
+  .stepContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center all content */
+    width: 100%; /* Full width content */
+    max-width: 400px; /* Limit maximum width for readability */
+    margin: 0 auto; /* Center the content block */
+  }
+  
+  .stepNumber img {
+    /* Adjust icon size for mobile if needed */
+    width: 150px !important; /* Override Next.js inline styles */
+    height: auto !important;
+  }
+  
+  .stepTitle {
+    font-size: 20px; /* Slightly larger title for emphasis */
+    margin-bottom: 12px; /* More space below title */
+  }
+  
+  .stepDescription {
+    font-size: 16px;
+    max-width: 100%; /* Full width for description */
+    text-align: center;
+  }
 }

@@ -36,6 +36,39 @@ export default function Home() {
     };
   }, [mobileMenuOpen]);
 
+// Fixed scrollToSection function with proper TypeScript annotations
+const scrollToSection = (elementId: string, e: React.MouseEvent<HTMLAnchorElement>): void => {
+  // Prevent default anchor behavior
+  e.preventDefault();
+  
+  // Find the element to scroll to
+  const element = document.getElementById(elementId);
+  
+  if (element) {
+    // Get the navbar height to offset the scroll position
+    // Fix: Cast the navbar to HTMLElement to access offsetHeight
+    const navbar = document.querySelector(`.${styles.navbar}`) as HTMLElement;
+    const navbarHeight = navbar ? navbar.offsetHeight : 0;
+    
+    // Get the element's position relative to the viewport
+    const elementPosition = element.getBoundingClientRect().top;
+    
+    // Get the current scroll position and calculate the target position
+    const offsetPosition = elementPosition + window.pageYOffset - navbarHeight - 20;
+    
+    // Smooth scroll to the element
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+    
+    // Close mobile menu if open
+    if (mobileMenuOpen) {
+      setMobileMenuOpen(false);
+    }
+  }
+};
+
   return (
     <div className={styles.homepage}>
       {/* Navigation Bar */}
@@ -60,12 +93,12 @@ export default function Home() {
             <span></span>
           </button>
           <div className={`${styles.navLinks} ${mobileMenuOpen ? styles.active : ''}`}>
-            <Link href="/support" className={styles.navLink} onClick={() => setMobileMenuOpen(false)}>
-              How it works
-            </Link>
-            <Link href="/privacy" className={styles.navLink} onClick={() => setMobileMenuOpen(false)}>
+          <a href="#howItWorks" className={styles.navLink} onClick={(e) => scrollToSection('howItWorks', e)} >
+            How it works
+          </a>
+          <a href="#whyPreptalk" className={styles.navLink} onClick={(e) => scrollToSection('whyPreptalk', e)} >
               Why PrepTalk?
-            </Link>
+          </a>
             <Link href="/privacy" className={styles.navLink} onClick={() => setMobileMenuOpen(false)}>
               Features
             </Link>
@@ -118,7 +151,7 @@ export default function Home() {
       </section>
 
       {/* How It Works Section */}
-      <section className={styles.howItWorks}>
+      <section id="howItWorks" className={styles.howItWorks}>
         <div className={styles.container}>
           <div className={styles.steps}>
             <div className={styles.step}>
@@ -248,7 +281,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials Section */}
-      <section className={styles.testimonials}>
+      <section id="reviews" className={styles.testimonials}>
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>What Users Say</h2>
           

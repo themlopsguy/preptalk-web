@@ -2,7 +2,7 @@
 .homepage {
   padding-top: 0px; /* Adjust based on your navbar height + margin */
   --primary-color: #1097D6;
-  --primary-dark: #0973a4;
+  --primary-dark: #0d86be;
   --secondary-color: #5a5a5a;
   --text-color: #333333;
   --light-text: #6c757d;
@@ -131,7 +131,7 @@
 .hero {
   /*padding: 10px 0;*/
   margin-top: -70px;
-  background: linear-gradient(to top, #1097D6, #c4eaff);
+  background: linear-gradient(to top, #0089c8, #7abbd9);
   position: relative; /* Create positioning context */
   overflow: visible; /* Allow content to extend outside */
   margin-bottom: 0px;
@@ -550,5 +550,49 @@
   .navbar.menuOpen {
     background-color: rgba(255, 255, 255, 0.95);
     border-radius: 35px 35px 0 0;
+  }
+
+  .hero {
+    padding: 120px 0 50px 0; /* Adjust top padding to account for navbar */
+    margin-top: 0; /* Remove negative margin on mobile */
+    text-align: center; /* Center all content on mobile */
+  }
+  
+  .hero .container {
+    flex-direction: column; /* Stack elements vertically */
+    gap: 40px; /* Add space between stacked elements */
+  }
+  
+  .heroContent {
+    width: 100%; /* Full width on mobile */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content horizontally */
+  }
+  
+  .heroTitle {
+    padding-top: 60px; /* Reduce top padding on mobile */
+    font-size: 32px; /* Slightly smaller font on mobile */
+    white-space: normal; /* Allow text to wrap */
+    overflow: visible; /* Show all content */
+    color: #ffffff;
+  }
+  
+  .heroSubtitle {
+    font-size: 18px; /* Slightly smaller font size on mobile */
+    max-width: 75%; /* Full width */
+  }
+  
+  .heroButtons {
+    justify-content: center; /* Center the download button */
+  }
+  
+  .heroImage {
+    width: 100%; /* Full width on mobile */
+  }
+  
+  .phoneMockup {
+    max-width: 100%; /* Smaller phone image on mobile */
+    transform: translateY(0); /* Don't push the image down on mobile */
   }
 }

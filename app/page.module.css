@@ -129,7 +129,7 @@
 
 /* Hero Section */
 .hero {
-  /*padding: 10px 0;*/
+  padding: 50px 0;
   margin-top: -70px;
   background: linear-gradient(to top, #0089c8, #7abbd9);
   position: relative; /* Create positioning context */
@@ -177,14 +177,15 @@
   flex: 1; /* Increase the flex ratio to give more space to the image */
   display: flex;
   justify-content: center;
-  padding-right: 100px;
+  padding-right: 50px;
+  padding-left: 50px;
   position: relative;
 }
 
 .phoneMockup {
   position: relative;
   z-index: 2;
-  max-width: 150%; /* Allow image to be larger than its container */
+  max-width: 130%; /* Allow image to be larger than its container */
   height: auto;
   filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.15));
   transform: translateY(20%);

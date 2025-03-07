@@ -107,8 +107,8 @@ export default function Home() {
             <Image 
               src="/hero-image.png" 
               alt="PrepTalk app on iPhone" 
-              width={875} 
-              height={1540}
+              width={450} 
+              height={850}
               quality={100}
               priority={true}
               className={styles.phoneMockup}

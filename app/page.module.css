@@ -336,7 +336,7 @@
 }
 
 .styledDivider {
-  height: 3px;
+  height: 2px;
   background-color: var(--border-color);
   width: 70%;
   position: absolute; /* Change back to absolute positioning */
@@ -348,7 +348,7 @@
 
 /* Why PrepTalk Section */
 .whyPreptalk {
-  padding: 100px 0;
+  padding: 50px 0;
   background-color: var(--light-bg);
 }
 
@@ -695,6 +695,8 @@
   .whyPrepTalkContent {
     flex-direction: column;
     text-align: center;
+    align-items: center;
+    gap: 0px;
   }
   
   .whyPrepTalkText .sectionTitle {
@@ -703,7 +705,7 @@
   }
   
   .whyPrepTalkDescription {
-    max-width: 100%;
+    max-width: 90%;
     margin: 0 auto;
   }
   

@@ -589,10 +589,16 @@
   
   .heroImage {
     width: 100%; /* Full width on mobile */
+    padding-right: 0; /* Remove right padding */
+    display: flex;
+    justify-content: center; /* Center the image horizontally */
+    align-items: center; /* Center the image vertically */
   }
   
   .phoneMockup {
-    max-width: 100%; /* Smaller phone image on mobile */
+    max-width: 75%; /* Smaller phone image on mobile */
     transform: translateY(0); /* Don't push the image down on mobile */
+    margin-left: auto; /* Center the image using auto margins */
+    margin-right: auto;
   }
 }

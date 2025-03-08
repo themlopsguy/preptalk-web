@@ -252,66 +252,27 @@ const scrollToSection = (elementId: string, e: React.MouseEvent<HTMLAnchorElemen
 
       {/* Features Section */}
       <section id="features" className={styles.features}>
-        <div className={styles.container}>
-          <h2 className={styles.sectionTitle}>Key Features</h2>
-          
-          <div className={styles.featureGrid}>
-            <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                  <path d="M14.0656 20.8412L10.3907 15.0522C8.98891 12.8369 9.68356 9.94437 11.8989 8.5426L12.766 7.96388L11.3891 4.58794L8.53907 6.38871C4.45782 8.89167 3.36678 14.3082 5.8697 18.3895L9.5446 24.1785L14.0656 20.8412Z" />
-                  <path d="M16.6585 15.5145L15.2816 12.1386L19.8026 10.2386L21.1795 13.6145L16.6585 15.5145Z" />
-                  <path d="M21.1795 2.2145L16.6585 0.314453L15.2816 3.69039L19.8026 5.59044L21.1795 2.2145Z" />
-                  <path d="M19.8024 10.239L15.2813 12.139L16.6582 15.5149L21.1793 13.6149L19.8024 10.239Z" />
-                </svg>
-              </div>
-              <h3 className={styles.featureTitle}>AI-Generated Questions</h3>
-              <p className={styles.featureDescription}>
-                Get tailored interview questions based on your resume and target job description
-              </p>
-            </div>
-            
-            <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                  <path d="M12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12C15 13.6569 13.6569 15 12 15Z" />
-                  <path fillRule="evenodd" clipRule="evenodd" d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12ZM20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12Z" />
-                </svg>
-              </div>
-              <h3 className={styles.featureTitle}>Natural Voice Interviews</h3>
-              <p className={styles.featureDescription}>
-                Practice with realistic interviews using high-quality voice synthesis technology
-              </p>
-            </div>
-            
-            <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                  <path d="M9 16.1716L19.5858 5.58578L21 7L9 19L3 13L4.41421 11.5858L9 16.1716Z" />
-                </svg>
-              </div>
-              <h3 className={styles.featureTitle}>Detailed Feedback</h3>
-              <p className={styles.featureDescription}>
-                Receive personalized feedback and improvement suggestions after each practice session
-              </p>
-            </div>
-            
-            <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                  <path d="M8 6V16C8 16.5523 8.44772 17 9 17H15C15.5523 17 16 16.5523 16 16V6C16 5.44772 15.5523 5 15 5H9C8.44772 5 8 5.44772 8 6Z" />
-                  <path d="M3 10V18C3 18.5523 3.44772 19 4 19H7V9H4C3.44772 9 3 9.44772 3 10Z" />
-                  <path d="M17 9V19H20C20.5523 19 21 18.5523 21 18V10C21 9.44772 20.5523 9 20 9H17Z" />
-                </svg>
-              </div>
-              <h3 className={styles.featureTitle}>Progress Tracking</h3>
-              <p className={styles.featureDescription}>
-                Monitor your improvement over time with comprehensive progress analytics
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+  <div className={styles.container}>
+    <div className={styles.featureLayout}>
+      <div className={styles.featureContent}>
+        <h1 className={styles.featureTitle}>Know when your ready.</h1>
+        <p className={styles.featureDescription}>
+          The core of PrepTalk is the PrepScore. This personalized score is based on your unique weaknesses and goals. When your score reaches 800+, you are golden and interview-ready!
+        </p>
+      </div>
+      <div className={styles.featureImageWrapper}>
+        <Image 
+          src="/feature-image.png" 
+          alt="Feature Image"
+          width={1000}
+          height={600}
+          quality={100}
+          className={styles.featureImage}
+        />
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* Testimonials Section */}
       <section id="reviews" className={styles.testimonials}>

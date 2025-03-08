@@ -231,59 +231,54 @@
 /* Features Section */
 .features {
   position: relative;
-  z-index: 1; /* Ensure this is lower than the hero image z-index */
-  padding-top: 160px;
+  padding: 60px 0 120px 0;
+  background-color: #f0f0f0;
 }
 
-.sectionTitle {
-  font-size: 36px;
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 48px;
-  color: #1a1a1a;
-}
-
-.featureGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 32px;
-}
-
-.featureCard {
-  background: white;
-  padding: 32px;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.featureCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-}
-
-.featureIcon {
-  width: 64px;
-  height: 64px;
-  border-radius: 16px;
-  background: rgba(24, 118, 165, 0.1);
+.featureLayout {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 24px;
-  color: var(--primary-color);
+  position: relative;
+  overflow: visible; /* Allow image to overflow if needed */
+}
+
+.featureContent {
+  flex: 0.8;
+  padding-right: 0; /* Remove right padding to allow overlap */
+  z-index: 3; /* Higher z-index to ensure text is on top */
+  position: relative; /* Required for z-index to work */
 }
 
 .featureTitle {
-  font-size: 22px;
+  font-size: 48px;
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  text-align: left;
   color: #1a1a1a;
+  white-space: nowrap;
 }
 
 .featureDescription {
-  color: var(--light-text);
+  font-size: 18px;
   line-height: 1.6;
+  color: var(--light-text);
+  max-width: 90%;
+}
+
+.featureImageWrapper {
+  flex: 1.8;
+  position: relative;
+  margin-left: -80px; /* Pull the image to the left to create overlap */
+  z-index: 2; /* Lower z-index than the text */
+}
+
+.featureImage {
+  position: relative;
+  z-index: 1;
+  max-width: 120%;
+  height: auto;
+  transform: scale(1.1);
+  transform-origin: left center;
 }
 
 /* How It Works Section */
@@ -369,9 +364,16 @@
   padding: 60px 0;
 }
 
-.whyPrepTalkText .sectionTitle {
+.sectionTitle {
   text-align: left;
   margin-bottom: 24px;
+  font-size: 48px;
+  font-weight: 600;
+}
+
+.whyPrepTalkText {
+  text-align: left;
+  margin-bottom: 84px;
   font-size: 48px;
   font-weight: 600;
 }
@@ -701,6 +703,7 @@
     text-align: center;
     align-items: center;
     gap: 0px;
+    margin-bottom: -100px;
   }
   
   .whyPrepTalkText .sectionTitle {
@@ -719,5 +722,51 @@
     max-width: 90%;
     height: auto;
     margin-bottom: -30px;
+  }
+
+  .featureLayout {
+    flex-direction: column; /* Stack elements vertically */
+    gap: 40px; /* Add space between elements */
+  }
+  
+  .featureContent {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    /* Remove any z-index */
+    z-index: auto;
+  }
+  
+  .featureTitle {
+    font-size: 24px;
+    white-space: normal; /* Allow wrapping on mobile */
+    text-align: center;
+  }
+  
+  .featureDescription {
+    max-width: 100%;
+    font-size: 16px;
+    text-align: center;
+    margin: 0 auto;
+  }
+  
+  .featureImageWrapper {
+    width: 100%;
+    margin-left: 0; /* Remove the negative margin */
+    /* Remove any z-index */
+    display: flex;           /* Enable flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center;     /* Center vertically */
+    z-index: auto;
+  }
+  
+  .featureImage {
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;          /* Alternative centering with auto margins */
+    margin-top: 0;
+    display: block;          /* Block display for margin auto to work */
+    padding-right: 50px;
   }
 }

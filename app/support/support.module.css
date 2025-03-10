@@ -1,0 +1,160 @@
+/* Import your base styles */
+.supportPage {
+    --primary-color: #1097D6;
+    --primary-dark: #0d86be;
+    --secondary-color: #5a5a5a;
+    --text-color: #333333;
+    --light-text: #6c757d;
+    --background-color: #f8f9fa;
+    --light-bg: #f8f9fa;
+    --border-color: #d0d8df;
+    
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    font-family: var(--font-geist-sans);
+    position: relative;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  
+  /* Navigation */
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    padding: 16px 0;
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: none;
+    transition: background-color 0.3s ease;
+    margin-top: 12px;
+    border-radius: 35px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    width: 95%;
+    max-width: 1200px;
+  }
+  
+  .navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Support Content */
+  .supportContent {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 120px 20px 80px;
+  }
+  
+  .supportCard {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    padding: 40px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .supportTitle {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: var(--text-color);
+  }
+  
+  .supportText {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--secondary-color);
+    margin-bottom: 20px;
+  }
+  
+  .supportEmail {
+    display: inline-block;
+    color: var(--primary-color);
+    font-size: 20px;
+    font-weight: 500;
+    text-decoration: none;
+    margin-bottom: 40px;
+    transition: color 0.2s ease;
+  }
+  
+  .supportEmail:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+  }
+  
+  .backToHome {
+    margin-top: 30px;
+  }
+  
+  .backLink {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+  
+  .backLink:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+  }
+  
+  /* Footer */
+  .footer {
+    background-color: #1a1a1a;
+    color: white;
+    padding: 20px 0;
+    margin-top: auto;
+  }
+  
+  .footerBottom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .copyright {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    text-align: center;
+  }
+  
+  /* Mobile Responsive Styles */
+  @media (max-width: 900px) {
+    .supportTitle {
+      font-size: 28px;
+    }
+    
+    .supportText {
+      font-size: 16px;
+    }
+    
+    .supportEmail {
+      font-size: 18px;
+    }
+    
+    .supportCard {
+      padding: 30px 20px;
+      margin: 0 20px;
+    }
+  }

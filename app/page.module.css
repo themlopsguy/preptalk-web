@@ -767,6 +767,6 @@
     margin: 0 auto;          /* Alternative centering with auto margins */
     margin-top: 0;
     display: block;          /* Block display for margin auto to work */
-
+    padding-right: 25px;
   }
 }

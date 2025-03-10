@@ -255,10 +255,19 @@ const scrollToSection = (elementId: string, e: React.MouseEvent<HTMLAnchorElemen
   <div className={styles.container}>
     <div className={styles.featureLayout}>
       <div className={styles.featureContent}>
-        <h1 className={styles.featureTitle}>Know when your ready.</h1>
+        <h1 className={styles.featureTitle}>Know when you're ready.</h1>
         <p className={styles.featureDescription}>
           The core of PrepTalk is the PrepScore. This personalized score is based on your unique weaknesses and goals. When your score reaches 800+, you are golden and interview-ready!
         </p>
+        <h3 className={styles.featureSubtitle}>Integrated Features:</h3>
+        <ul className={styles.featureBullets}>
+          <li>Pofile Setup</li>
+          <li>Cutting-edge Conversational AI</li>
+          <li>Personalized, Role-specific Feedback and Performanace Analysis</li>
+          <li>Auto-parsing of Resume and Desire Job Posting Link</li>
+          <li>Resume Updating</li>
+          <li>See Performance Progress Over Time</li>
+        </ul>
       </div>
       <div className={styles.featureImageWrapper}>
         <Image 
@@ -314,15 +323,15 @@ const scrollToSection = (elementId: string, e: React.MouseEvent<HTMLAnchorElemen
           <p className={styles.ctaDescription}>
             Download PrepTalk today and start practicing with our AI-powered interview coach.
           </p>
-          <a href="https://apps.apple.com/app/preptalk" className={styles.primaryButton}>
-            <Image 
-              src="/app-store-badge.svg" 
-              alt="Download on the App Store" 
-              width={180} 
-              height={60}
-              className={styles.appStoreBadge}
-            />
-          </a>
+            <a href="https://apps.apple.com/us/app/preptalk-ai-job-interviews/id6740067315?itscg=30200&itsct=apps_box_badge&mttnsubad=6740067315">
+              <img 
+                src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/en-us?releaseDate=1736121600" 
+                alt="Download on the App Store" 
+                width={180} 
+                height={60}
+                className={styles.appStoreBadge}
+              />
+            </a>
         </div>
       </section>
 

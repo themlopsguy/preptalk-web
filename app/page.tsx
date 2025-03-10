@@ -292,25 +292,25 @@ const scrollToSection = (elementId: string, e: React.MouseEvent<HTMLAnchorElemen
             <div className={styles.testimonialCard}>
               <div className={styles.testimonialStars}>★★★★★</div>
               <p className={styles.testimonialText}>
-                "PrepTalk helped me land my dream job at a top tech company. The practice interviews were incredibly realistic and the feedback was spot-on."
+                "I hate interviews. This app has finally helped me feel confident and nail my latest interview and get an offer!!!"
               </p>
-              <p className={styles.testimonialAuthor}>— Alex M., Software Engineer</p>
+              <p className={styles.testimonialAuthor}>— MLOpsGuy</p>
             </div>
             
             <div className={styles.testimonialCard}>
               <div className={styles.testimonialStars}>★★★★★</div>
               <p className={styles.testimonialText}>
-                "I used to get so nervous during interviews, but after practicing with PrepTalk, I felt much more confident and prepared. The voice synthesis is amazingly natural!"
+                "This app was exactly what I was looking for. Easy to use, and had all of the tools that helped me feel confident in my interviews."
               </p>
-              <p className={styles.testimonialAuthor}>— Sarah J., Marketing Manager</p>
+              <p className={styles.testimonialAuthor}>— J-Truitt</p>
             </div>
             
             <div className={styles.testimonialCard}>
               <div className={styles.testimonialStars}>★★★★★</div>
               <p className={styles.testimonialText}>
-                "The personalized feedback helped me identify weaknesses in my responses that I never noticed before. I've seen a huge improvement in just a few weeks."
+                "This app is a great tool when preparing for interviews. It's very user friendly and easy to navigate. The real time feedback provides valuable insights. Highly recommend for anyone looking to improve their interview skills!"
               </p>
-              <p className={styles.testimonialAuthor}>— Michael T., Product Manager</p>
+              <p className={styles.testimonialAuthor}>— Thinkofpink</p>
             </div>
           </div>
         </div>

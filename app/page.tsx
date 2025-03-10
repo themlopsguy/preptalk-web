@@ -286,7 +286,8 @@ const scrollToSection = (elementId: string, e: React.MouseEvent<HTMLAnchorElemen
       {/* Testimonials Section */}
       <section id="reviews" className={styles.testimonials}>
         <div className={styles.container}>
-          <h2 className={styles.sectionTitle}>What Users Say</h2>
+          <h2 className={styles.testimonialTitle}>Our Users Love PrepTalk</h2>
+          <p className={styles.testimonialSubtitle}>They're receiving great offers with the help of PrepTalk!</p>
           
           <div className={styles.testimonialGrid}>
             <div className={styles.testimonialCard}>
@@ -321,7 +322,7 @@ const scrollToSection = (elementId: string, e: React.MouseEvent<HTMLAnchorElemen
         <div className={styles.container}>
           <h2 className={styles.ctaTitle}>Ready to Ace Your Next Interview?</h2>
           <p className={styles.ctaDescription}>
-            Download PrepTalk today and start practicing with our AI-powered interview coach.
+            Download PrepTalk today and start your path towards your dream job!
           </p>
             <a href="https://apps.apple.com/us/app/preptalk-ai-job-interviews/id6740067315?itscg=30200&itsct=apps_box_badge&mttnsubad=6740067315">
               <img 

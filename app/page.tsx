@@ -351,22 +351,15 @@ const scrollToSection = (elementId: string, e: React.MouseEvent<HTMLAnchorElemen
             </div>
             
             <div className={styles.footerLinks}>
-              <div className={styles.footerLinkGroup}>
-                <h3 className={styles.footerLinkTitle}>Company</h3>
-                <Link href="/about" className={styles.footerLink}>About Us</Link>
-                <Link href="/support" className={styles.footerLink}>Contact</Link>
-                <a href="#" className={styles.footerLink}>Careers</a>
-              </div>
               
               <div className={styles.footerLinkGroup}>
                 <h3 className={styles.footerLinkTitle}>Legal</h3>
-                <Link href="/privacy" className={styles.footerLink}>Privacy Policy</Link>
-                <Link href="/terms" className={styles.footerLink}>Terms of Service</Link>
+                <Link href="/legal/privacy" className={styles.footerLink}>Privacy Policy</Link>
+                <Link href="/legal/terms" className={styles.footerLink}>Terms of Service</Link>
               </div>
               
               <div className={styles.footerLinkGroup}>
                 <h3 className={styles.footerLinkTitle}>Support</h3>
-                <Link href="/support" className={styles.footerLink}>Help Center</Link>
                 <Link href="/support" className={styles.footerLink}>Contact Support</Link>
               </div>
             </div>
